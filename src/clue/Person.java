@@ -45,4 +45,9 @@ public class Person {
     public void setCurrSpace(Space space) {
         this.CurrSpace = space;
     }
+    
+    @Override
+    public String toString() {
+        return this.Name;
+    }
 }

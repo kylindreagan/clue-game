@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import javax.swing.JLabel;
+import javax.swing.Timer;
 
 /**
  *
@@ -50,7 +52,7 @@ public class maingamehelpers {
     public static int dice_roll() {
         Random random = new Random();
 
-        // Generates a random integer between Integer.MIN_VALUE and Integer.MAX_VALUE
+        // 1 will be magnifying glass
         int randomInt = random.nextInt(1,6);
         return randomInt;
     }
@@ -63,4 +65,26 @@ public class maingamehelpers {
             return false;
         }
     }
+     
+    public static Space find_closest(List<Space> possible_locations, List<Space> rooms) {
+        Space closest = null;
+        int minDistance = Integer.MAX_VALUE;
+        for (Space p: possible_locations) {
+            for (Space s: rooms) {
+                if (p == s){
+                    return p;
+                }
+                else{
+                    int distance = Math.abs(p.getCol()-s.getCol()) + Math.abs(p.getRow()-s.getRow());
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closest = p;
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+     
+     
 }

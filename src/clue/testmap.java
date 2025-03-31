@@ -21,20 +21,25 @@ import javax.swing.Timer;
  */
 public class testmap extends javax.swing.JFrame {
     private List<List<Space>> board;
-    private Space start;
+    private Space start_red;
+    private Space start_blue;
     private Space test_room;
+    private boolean draw_card;
     private Person testPerson;
+    private Person testPerson1;
+    private Person testPerson2;
     private Border glowBorder = BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(0, 191, 255), 3, true),  // Outer glow
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)  // Padding
         );
     List<Space> possible;
-    int curr_row = 1;
-    int curr_col = 0;
+    private boolean player1;
+    private boolean player2;
     /**
      * Creates new form testmap
      */
     public testmap() {
+        draw_card = false;
         initComponents();
         cluesheet.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
@@ -121,12 +126,13 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         jButton18 = new javax.swing.JButton();
         testboard = new javax.swing.JLabel();
         jButton19 = new javax.swing.JButton();
+        Reset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         cluecards.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cluehand.jpg"))); // NOI18N
-        getContentPane().add(cluecards, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 380, -1, 120));
+        getContentPane().add(cluecards, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 370, -1, 120));
 
         cluesheet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cluesheettemplate.png"))); // NOI18N
         cluesheet.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -134,7 +140,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 cluesheetMouseClicked(evt);
             }
         });
-        getContentPane().add(cluesheet, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 310, 150, -1));
+        getContentPane().add(cluesheet, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 300, 150, -1));
 
         jButton1.setContentAreaFilled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +148,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 60, 70, 70));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 50, 70, 70));
 
         jButton2.setContentAreaFilled(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +156,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 60, 70, 70));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 50, 70, 70));
 
         jButton3.setContentAreaFilled(false);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -158,7 +164,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 60, 70, 70));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 50, 70, 70));
 
         jButton4.setContentAreaFilled(false);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -166,7 +172,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton4ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 60, 70, 70));
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 70, 70));
 
         jButton5.setContentAreaFilled(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -174,7 +180,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton5ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, 80, 70));
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, 80, 70));
 
         jButton6.setContentAreaFilled(false);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -182,7 +188,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton6ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 130, 70, 70));
+        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 70, 70));
 
         jButton7.setContentAreaFilled(false);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
@@ -190,7 +196,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton7ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 130, 70, 70));
+        getContentPane().add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 120, 70, 70));
 
         jButton8.setContentAreaFilled(false);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -198,7 +204,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton8ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 130, 80, 70));
+        getContentPane().add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 120, 80, 70));
 
         jButton9.setContentAreaFilled(false);
         jButton9.addActionListener(new java.awt.event.ActionListener() {
@@ -206,7 +212,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton9ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 80, 70));
+        getContentPane().add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 80, 70));
 
         jButton10.setContentAreaFilled(false);
         jButton10.addActionListener(new java.awt.event.ActionListener() {
@@ -214,7 +220,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton10ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 200, 70, 70));
+        getContentPane().add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 190, 70, 70));
 
         jButton11.setContentAreaFilled(false);
         jButton11.addActionListener(new java.awt.event.ActionListener() {
@@ -222,7 +228,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton11ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 70, 70));
+        getContentPane().add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 190, 70, 70));
 
         jButton12.setContentAreaFilled(false);
         jButton12.addActionListener(new java.awt.event.ActionListener() {
@@ -230,7 +236,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton12ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 200, 70, 70));
+        getContentPane().add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 190, 70, 70));
 
         jButton13.setContentAreaFilled(false);
         jButton13.addActionListener(new java.awt.event.ActionListener() {
@@ -238,7 +244,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton13ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 270, 70, 70));
+        getContentPane().add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 260, 70, 70));
 
         jButton14.setContentAreaFilled(false);
         jButton14.addActionListener(new java.awt.event.ActionListener() {
@@ -246,7 +252,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton14ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 270, 70, 70));
+        getContentPane().add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 260, 70, 70));
 
         jButton15.setContentAreaFilled(false);
         jButton15.addActionListener(new java.awt.event.ActionListener() {
@@ -254,7 +260,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton15ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 270, 70, 70));
+        getContentPane().add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 260, 70, 70));
 
         jButton16.setContentAreaFilled(false);
         jButton16.addActionListener(new java.awt.event.ActionListener() {
@@ -262,7 +268,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton16ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 270, 70, 80));
+        getContentPane().add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 260, 70, 80));
 
         jButton17.setBackground(java.awt.Color.red);
         jButton17.setBorderPainted(false);
@@ -272,7 +278,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton17ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, 70, 70));
+        getContentPane().add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 120, 70, 70));
 
         jButton18.setText("Test Room");
         jButton18.setActionCommand("Test Room 1");
@@ -282,10 +288,10 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton18ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 130, 130, 70));
+        getContentPane().add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 120, 130, 70));
 
         testboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/test.png"))); // NOI18N
-        getContentPane().add(testboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 320, 320));
+        getContentPane().add(testboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 320, 320));
 
         jButton19.setBackground(java.awt.Color.blue);
         jButton19.setBorderPainted(false);
@@ -295,23 +301,33 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 jButton19ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, 70, 70));
+        getContentPane().add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, 70, 70));
+
+        Reset.setText("Reset Position");
+        Reset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResetActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        curr_row = 3;
-        curr_col = 4;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 3;
+        int curr_col = 4;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        curr_row = 2;
-        curr_col = 3;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 2;
+        int curr_col = 3;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton11ActionPerformed
@@ -321,121 +337,136 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        curr_row = 1;
-        curr_col = 1;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 1;
+        int curr_col = 1;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        curr_row = 1;
-        curr_col = 2;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 1;
+        int curr_col = 2;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        curr_row = 1;
-        curr_col = 3;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 1;
+        int curr_col = 3;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        curr_row = 1;
-        curr_col = 4;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 1;
+        int curr_col = 4;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        curr_row = 0;
-        curr_col = 1;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 0;
+        int curr_col = 1;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        curr_row = 0;
-        curr_col = 2;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+       int  curr_row = 0;
+        int curr_col = 2;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        curr_row = 0;
-        curr_col = 3;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 0;
+        int curr_col = 3;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        curr_row = 0;
-        curr_col = 4;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 0;
+        int curr_col = 4;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        curr_row = 2;
-        curr_col = 1;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 2;
+        int curr_col = 1;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        curr_row = 2;
-        curr_col = 2;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 2;
+        int curr_col = 2;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        curr_row = 2;
-        curr_col = 4;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 2;
+        int curr_col = 4;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        curr_row = 3;
-        curr_col = 1;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+        int curr_row = 3;
+        int curr_col = 1;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-       curr_row = 3;
-        curr_col = 3;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+       int curr_row = 3;
+       int  curr_col = 3;
+       Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        curr_row = 3;
-        curr_col = 2;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+       int  curr_row = 3;
+        int curr_col = 2;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-       curr_row = 1;
-        curr_col = 5;
-        if (!board.get(curr_row).get(curr_col).isOccupied() && possible.contains(board.get(curr_row).get(curr_col))) {
+       int curr_row = 1;
+       int  curr_col = 5;
+        Space curr_space = board.get(curr_row).get(curr_col);
+        if ((!curr_space.isOccupied()||curr_space.getOccupant()==testPerson) && possible.contains(board.get(curr_row).get(curr_col))) {
             move_piece(board.get(curr_row).get(curr_col));
         }
     }//GEN-LAST:event_jButton18ActionPerformed
@@ -448,12 +479,31 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton19ActionPerformed
 
+    private void ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetActionPerformed
+        Space curr1 = testPerson1.getCurrSpace();
+        Space curr2 = testPerson2.getCurrSpace();
+        curr1.setOccupant(null);
+        curr2.setOccupant(null);
+        curr1.setOccupied(false);
+        curr2.setOccupied(false);
+        start_red.setOccupant(testPerson1);
+        start_red.setOccupied(true);
+        start_blue.setOccupant(testPerson2);
+        start_blue.setOccupied(true);
+        testPerson1.setCurrSpace(start_red);
+        testPerson2.setCurrSpace(start_blue);
+        unset_selectable();
+        int roll = maingamehelpers.dice_roll();
+        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, roll);
+        set_selectable();
+    }//GEN-LAST:event_ResetActionPerformed
+
     public void init_board() {
         board = new ArrayList<>();
         JButton[][] buttons = {
             {null, jButton1, jButton2, jButton3, jButton4, null},
             {jButton17, jButton5, jButton6, jButton7, jButton8, jButton18},
-            {null,jButton9, jButton10, jButton11, jButton12, null},
+            {jButton19,jButton9, jButton10, jButton11, jButton12, null},
             {null,jButton13, jButton14, jButton15, jButton16, null}
         };
         
@@ -465,12 +515,16 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                     rowSpaces.add(null);
                 }
                 else if (curr == jButton17) {
-                    start = new Space(jButton17, false, row, col);
-                    rowSpaces.add(start);
+                    start_red = new Space(curr, false, row, col);
+                    rowSpaces.add(start_red);
                 }
                 else if (curr == jButton18) {
-                    test_room = new Space(jButton18, true, row, col);
+                    test_room = new Space(curr, true, row, col);
                     rowSpaces.add(test_room);
+                }
+                else if (curr == jButton19) {
+                    start_blue = new Space(curr, false, row, col);
+                    rowSpaces.add(start_blue);
                 }
                 else {
                 rowSpaces.add(new Space(curr, false, row, col));
@@ -493,30 +547,52 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
     }
     
     public void start_game() {
-        testPerson = new Person(Color.red, "test person", start);
-        start.setOccupant(testPerson);
-        start.setOccupied(true);
+        testPerson1 = new Person(Color.red, "test person", start_red);
+        testPerson2 = new Person(Color.blue, "test person", start_blue);
+        testPerson = testPerson1;
+        start_red.setOccupant(testPerson1);
+        start_red.setOccupied(true);
+        start_blue.setOccupant(testPerson2);
+        start_blue.setOccupied(true);
         int curr_roll = maingamehelpers.dice_roll();
-        possible = maingamehelpers.get_available(board, curr_row, curr_col, 4, 6, curr_roll);
-        System.out.println(possible);
+        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll);
         set_selectable();
         
     }
     
+    public void accuse_player(Person accused, Space Room, String Weapon) {
+        Space current = accused.getCurrSpace();
+        current.setOccupant(null);
+        current.setOccupied(false);
+        Room.setOccupant(accused);
+        Room.setOccupied(true);
+    }
+    
     public void next_game() {
         int curr_roll = maingamehelpers.dice_roll();
-        possible = maingamehelpers.get_available(board, curr_row, curr_col, 4, 6, curr_roll);
-        System.out.println(possible);
+        set_turn();
+        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll);
         set_selectable();
         
     }
+    
+    public void set_turn() {
+        if (testPerson == testPerson1) {
+            testPerson = testPerson2;
+        }
+        else{
+            testPerson = testPerson1;
+        }
+    } 
     
     public void set_selectable() {
         for (Space reachable: possible) {
             if (reachable != null && reachable.getButton() != null) {
             // Reset the border first
+            if (!reachable.isOccupied()){
             reachable.getButton().setBorder(null);
             reachable.getButton().setBorder(glowBorder); // Apply the new border
+            }
         }
         }
         this.revalidate();
@@ -566,6 +642,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Reset;
     private javax.swing.JLabel cluecards;
     private javax.swing.JLabel cluesheet;
     private javax.swing.JButton jButton1;

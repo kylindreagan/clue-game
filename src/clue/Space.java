@@ -38,6 +38,9 @@ public Space(JButton button, boolean isRoomSpace, int row, int col) {
             if (this.occupant.getOccupantColor() == Color.red) {
                 this.button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/redpeg.png")));
             }
+            else if (this.occupant.getOccupantColor() == Color.blue) {
+                this.button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bluepeg.png")));
+            }
         }
         if (!occupied) {
             this.button.setIcon(null);
