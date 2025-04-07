@@ -7,13 +7,13 @@ package clue;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.Timer;
-
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -32,13 +32,18 @@ public class testmap extends javax.swing.JFrame {
                 BorderFactory.createLineBorder(new Color(0, 191, 255), 3, true),  // Outer glow
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)  // Padding
         );
-    List<Space> possible;
-    private boolean player1;
-    private boolean player2;
+    private List<Space> possible;
+    private List<Space> rooms;
+    private AIPlayer testAI1;
+    private AIPlayer testAI2;
+    private Set<ClueCard> All_Cards;
+    
     /**
      * Creates new form testmap
      */
+    
     public testmap() {
+        rooms = new ArrayList<>();
         draw_card = false;
         initComponents();
         cluesheet.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -124,8 +129,8 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
-        testboard = new javax.swing.JLabel();
         jButton19 = new javax.swing.JButton();
+        testboard = new javax.swing.JLabel();
         Reset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -290,9 +295,6 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         });
         getContentPane().add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 120, 130, 70));
 
-        testboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/test.png"))); // NOI18N
-        getContentPane().add(testboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 320, 320));
-
         jButton19.setBackground(java.awt.Color.blue);
         jButton19.setBorderPainted(false);
         jButton19.setDoubleBuffered(true);
@@ -302,6 +304,9 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
             }
         });
         getContentPane().add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, 70, 70));
+
+        testboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/test.png"))); // NOI18N
+        getContentPane().add(testboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 320, 320));
 
         Reset.setText("Reset Position");
         Reset.addActionListener(new java.awt.event.ActionListener() {
@@ -494,7 +499,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         testPerson2.setCurrSpace(start_blue);
         unset_selectable();
         int roll = maingamehelpers.dice_roll();
-        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, roll);
+        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, roll, testPerson);
         set_selectable();
     }//GEN-LAST:event_ResetActionPerformed
 
@@ -521,6 +526,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
                 else if (curr == jButton18) {
                     test_room = new Space(curr, true, row, col);
                     rowSpaces.add(test_room);
+                    rooms.add(test_room);
                 }
                 else if (curr == jButton19) {
                     start_blue = new Space(curr, false, row, col);
@@ -536,27 +542,53 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
     }
     
     public void move_piece(Space next_space){
-        Space currSpace = testPerson.getCurrSpace();
-        currSpace.setOccupied(false);
-        currSpace.setOccupant(null);
-        next_space.setOccupant(testPerson);
-        next_space.setOccupied(true);
-        testPerson.setCurrSpace(next_space);
+        if (!next_space.isOccupied()) {
+            Space currSpace = testPerson.getCurrSpace();
+            currSpace.setOccupied(false);
+            currSpace.setOccupant(null);
+            next_space.setOccupant(testPerson);
+            next_space.setOccupied(true);
+            testPerson.setCurrSpace(next_space);
+        }
         unset_selectable();
         next_game();
     }
     
     public void start_game() {
-        testPerson1 = new Person(Color.red, "test person", start_red);
-        testPerson2 = new Person(Color.blue, "test person", start_blue);
+        All_Cards = new HashSet<>();
+        testPerson1 = new Person(Color.red, "test person 1", start_red, true, true);
+        testPerson2 = new Person(Color.blue, "test person 2", start_blue, false, true);
         testPerson = testPerson1;
+        testAI1 = new AIPlayer(testPerson1, All_Cards, All_Cards);
+        testAI2 = new AIPlayer(testPerson2, All_Cards, All_Cards);
         start_red.setOccupant(testPerson1);
         start_red.setOccupied(true);
         start_blue.setOccupant(testPerson2);
         start_blue.setOccupied(true);
         int curr_roll = maingamehelpers.dice_roll();
-        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll);
-        set_selectable();
+        if (testPerson.isPlayer() && testPerson.isActive()) {
+            possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll, testPerson);
+            set_selectable();
+        }
+        else if (testPerson.isActive()) {
+            Space s = testAI1.makeMove(board, rooms, curr_roll);
+            move_piece(s);
+        }
+        else {
+        set_turn();
+        if (testPerson.isPlayer() && testPerson.isActive()) {
+            possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll, testPerson);
+            set_selectable();
+        }
+        else if (testPerson.isActive()) {
+            Space s = testAI2.makeMove(board, rooms, curr_roll);
+            move_piece(s);
+            
+        }
+        else {
+            System.out.println("All players gone. Handle it you coward.");
+        }
+        }
         
     }
     
@@ -571,9 +603,30 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
     public void next_game() {
         int curr_roll = maingamehelpers.dice_roll();
         set_turn();
-        possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll);
-        set_selectable();
+        System.out.println(testPerson.isActive());
+        if (testPerson.isPlayer() && testPerson.isActive()) {
+            possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll, testPerson);
+            set_selectable();
+        }
+        else if (testPerson.isActive()) {
+            Space s = testAI1.makeMove(board, rooms, curr_roll);
+            move_piece(s);
+        }
+        else {
+        set_turn();
+        if (testPerson.isPlayer() && testPerson.isActive()) {
+            possible = maingamehelpers.get_available(board, testPerson.getCurrSpace().getRow(), testPerson.getCurrSpace().getCol(), 4, 6, curr_roll, testPerson);
+            set_selectable();
+        }
+        else if (testPerson.isActive()) {
+            Space s = testAI2.makeMove(board, rooms, curr_roll);
+            move_piece(s);
+        }
+        else {
+            System.out.println("All players gone. Handle it you coward.");
+        }
         
+    }
     }
     
     public void set_turn() {
@@ -589,7 +642,7 @@ private void animateLift(JLabel label, int liftAmount, boolean liftUp) {
         for (Space reachable: possible) {
             if (reachable != null && reachable.getButton() != null) {
             // Reset the border first
-            if (!reachable.isOccupied()){
+            if (!reachable.isOccupied()||reachable.getOccupant()==testPerson){
             reachable.getButton().setBorder(null);
             reachable.getButton().setBorder(glowBorder); // Apply the new border
             }

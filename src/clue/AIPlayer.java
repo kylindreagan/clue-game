@@ -47,7 +47,7 @@ public class AIPlayer {
         Space curr_space = this.getLocation()
 ;        if (!curr_space.isRoomSpace()){
             int roll = maingamehelpers.dice_roll();
-            List<Space> possible = maingamehelpers.get_available(board, curr_space.getRow(), curr_space.getCol(), board.size(), board.getFirst().size(), roll);
+            List<Space> possible = maingamehelpers.get_available(board, curr_space.getRow(), curr_space.getCol(), board.size(), board.getFirst().size(), roll, this.character);
             Space closest = maingamehelpers.find_closest(possible, rooms);
             return closest;
         }

@@ -14,11 +14,15 @@ public class Person {
      private Color occupantColor;
      private String Name;
      private Space CurrSpace;
+     private boolean player;
+     private boolean inGame;
     
-    public Person(Color occupantColor, String Name, Space CurrSpace) {
+    public Person(Color occupantColor, String Name, Space CurrSpace, boolean player, boolean game) {
         this.occupantColor =  occupantColor;
         this.Name = Name;
         this.CurrSpace = CurrSpace;
+        this.player = player;
+        this.inGame = game;
     }
      
      
@@ -44,6 +48,19 @@ public class Person {
     
     public void setCurrSpace(Space space) {
         this.CurrSpace = space;
+    }
+    
+    public void personKiller(){
+        //for wrong guesses
+        this.inGame = false;
+    }
+    
+    public boolean isActive() {
+        return this.inGame;
+    }
+    
+    public boolean isPlayer() {
+        return this.player;
     }
     
     @Override

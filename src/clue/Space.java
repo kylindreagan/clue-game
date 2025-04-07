@@ -29,7 +29,7 @@ public Space(JButton button, boolean isRoomSpace, int row, int col) {
     }
 
     public boolean isOccupied() {
-        return occupied;
+        return occupied && !isRoomSpace;
     }
 
     public void setOccupied(boolean occupied) {

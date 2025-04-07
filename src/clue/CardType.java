@@ -9,5 +9,5 @@ package clue;
  * @author kylin
  */
 public enum CardType {
-    SUSPECT, WEAPON, ROOM
+    SUSPECT, WEAPON, ROOM, EFFECT
 }

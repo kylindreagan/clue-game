@@ -17,7 +17,7 @@ import javax.swing.Timer;
  * @author kylin
  */
 public class maingamehelpers {
-    public static List<Space> get_available(List<List<Space>> board, int start_row, int start_col, int rows, int cols, int roll){
+    public static List<Space> get_available(List<List<Space>> board, int start_row, int start_col, int rows, int cols, int roll, Person player){
         List<Space> possible = new ArrayList<>();
         boolean[][] visited = new boolean[rows][cols];
         Queue<int[]> queue = new LinkedList<>();
@@ -38,7 +38,7 @@ public class maingamehelpers {
             for (int[] dir : directions) {
                 int newRow = r + dir[0];
                 int newCol = c + dir[1];
-                if (isValidMove(board, newRow, newCol, rows, cols, visited)) {
+                if (isValidMove(board, newRow, newCol, rows, cols, visited, player)) {
                     queue.add(new int[]{newRow, newCol, moves + 1});
                     visited[newRow][newCol] = true;
                 }
@@ -57,9 +57,10 @@ public class maingamehelpers {
         return randomInt;
     }
     
-     private static boolean isValidMove(List<List<Space>> board, int row, int col, int rows, int cols, boolean[][] visited) {
+     private static boolean isValidMove(List<List<Space>> board, int row, int col, int rows, int cols, boolean[][] visited, Person player) {
         if (row >= 0 && row < rows && col >= 0 && col < cols) {
-               return !visited[row][col] && board.get(row).get(col) != null;
+            Space curr_space = board.get(row).get(col);
+            return !visited[row][col] && curr_space != null && (!curr_space.isOccupied()||curr_space.getOccupant()==player);
         }
         else {
             return false;
